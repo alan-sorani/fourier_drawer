@@ -7,15 +7,35 @@ import math, cmath
 from matplotlib.animation import FuncAnimation, PillowWriter
 import numpy as np
 
+margin = 0.1
+
+def order_coefficients(coefficients):
+    return dict(sorted(coefficients.items(), key=lambda item: np.abs(item[1]), reverse=True))
+
+def determine_size(coefficients):
+    radius_sum = 0
+    for i in coefficients:
+        radius_sum = radius_sum + np.abs(coefficients[i])
+    return 2 * (radius_sum + margin)
+
 arrow_color = '#ffffff'
 trace_color = '#ffdd00'
 background_color = '#000033'
 circle_color = arrow_color
 
-canvas_size = 4
 speed = 1 
 increment = 1/100
-coefficients = [complex(0), complex(1), complex(0), complex(0), complex(0), complex(0.5), complex(0), complex(0), complex(0), complex(0), complex(0.7)]
+
+coefficients = {
+        0:0,
+        -1:1,
+        5:0.5,
+        10:0.7
+        }
+coefficients = order_coefficients(coefficients)
+
+canvas_size = determine_size(coefficients)
+#coefficients = [complex(0), complex(1), complex(0), complex(0), complex(0), complex(0.5), complex(0), complex(0), complex(0), complex(0), complex(0.7)]
 
 ax=plt.axes()
 ax.set_facecolor(background_color)
@@ -23,6 +43,10 @@ index = count()
 x_vals = []
 y_vals = []
 trace = [[],[]]
+
+
+coefficients = order_coefficients(coefficients)
+
 
 def plot_graph(coefficients):
     positions, angles = zip(*[cmath.polar(z) for z in coefficients])
@@ -33,10 +57,10 @@ def update_points():
     x = [coefficients[0].real]
     y = [coefficients[0].imag]
     
-    for k in range(1, len(coefficients)):
-        r, theta = cmath.polar(coefficients[k])
-        x.append(x[-1] + r * math.cos(theta + k * increment * t))
-        y.append(y[-1] + r * math.sin(theta + k * increment * t))
+    for i in coefficients:
+        r, theta = cmath.polar(coefficients[i])
+        x.append(x[-1] + r * math.cos(theta + i * increment * t))
+        y.append(y[-1] + r * math.sin(theta + i * increment * t))
     trace[0].append(x[-1])
     trace[1].append(y[-1])
     return x, y
