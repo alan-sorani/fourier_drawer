@@ -11,8 +11,6 @@ from functools import partial
 speed = 1 
 increment = 1/100
 
-
-
 def order_coefficients(coefficients):
     return dict(sorted(coefficients.items(),
                        key=lambda item: np.abs(item[1]), reverse=True))
@@ -22,7 +20,6 @@ def determine_size(coefficients, margin):
     for i in coefficients:
         radius_sum = radius_sum + np.abs(coefficients[i])
     return 2 * (radius_sum + margin)
-
 
 def plot_graph(coefficients):
     positions, angles = zip(*[cmath.polar(z) for z in coefficients])

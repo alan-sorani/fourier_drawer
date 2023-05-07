@@ -1,0 +1,4 @@
+- make all arguments passed through the function
+- test that the program draws functions properly
+- find contours of an image
+- find a paramtrization for each contour
