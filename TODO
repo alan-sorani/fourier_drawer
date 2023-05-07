@@ -1,4 +1,5 @@
-- make all arguments passed through the function
-- test that the program draws functions properly
+- find parametrizations of contours given as subsets, and draw these
 - find contours of an image
-- find a paramtrization for each contour
+- apply the following algorithm for contour detection:
+
+Satoshi Suzuki and others. Topological structural analysis of digitized binary images by border following. Computer Vision, Graphics, and Image Processing, 30(1):32–46, 1985.
