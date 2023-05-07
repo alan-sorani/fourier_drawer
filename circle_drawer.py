@@ -12,10 +12,6 @@ speed = 1
 increment = 1/100
 
 
-index = count()
-x_vals = []
-y_vals = []
-trace = [[],[]]
 
 def order_coefficients(coefficients):
     return dict(sorted(coefficients.items(),
@@ -31,7 +27,7 @@ def determine_size(coefficients, margin):
 def plot_graph(coefficients):
     positions, angles = zip(*[cmath.polar(z) for z in coefficients])
 
-def update_points(coefficients):
+def update_points(coefficients, index, trace):
     t = next(index)
     
     x = [coefficients[0].real]
@@ -45,7 +41,7 @@ def update_points(coefficients):
     trace[1].append(y[-1])
     return x, y
 
-def draw_arrows(x,y,arrow_color,trace_color,background_color):
+def draw_arrows(x,y,arrow_color,circle_color):
     for i in range(1, len(x)):
         dx = x[i] - x[i-1]
         dy = y[i] - y[i-1]
@@ -58,14 +54,16 @@ def draw_arrows(x,y,arrow_color,trace_color,background_color):
                           linewidth = radius * 0.5)
         plt.gca().add_patch(circ)
 
-def animate(i, coefficients, canvas_size, margin, arrow_color, trace_color):
+def animate(i,
+            coefficients, canvas_size, margin,
+            arrow_color, trace_color, circle_color, index, trace):
     plt.cla()
 
     for i in range(speed):
-        x_vals, y_vals = update_points(coefficients)
+        x_vals, y_vals = update_points(coefficients, index, trace)
     
     plt.cla()
-    draw_arrows(x_vals, y_vals)
+    draw_arrows(x_vals,y_vals,arrow_color,circle_color)
     plt.plot(trace[0], trace[1], color = trace_color)
     plt.xlim(-canvas_size/2, canvas_size/2)
     plt.ylim(-canvas_size/2, canvas_size/2)
@@ -75,20 +73,25 @@ def circle_drawer(coefficients, ordering = True, margin = 0.1,
                    arrow_color = '#ffffff', trace_color = '#ffdd00',
                   background_color = '#000033', circle_color = None):
     ax=plt.axes()
-    ax.set_facecolor('#000000')
+    ax.set_facecolor(background_color)
     canvas_size = determine_size(coefficients, margin)
     if(ordering == True):
         coefficients = order_coefficients(coefficients)
     if circle_color is None:
         circle_color = arrow_color
+    
+    index = count()
+    trace = [[],[]]
+    
     ani = FuncAnimation(plt.gcf(), partial(animate,
                                            coefficients=coefficients,
                                            canvas_size=canvas_size,
                                            margin=margin,
                                            arrow_color=arrow_color,
                                            trace_color=trace_color,
-                                           background_color=background_color,
-                                           circle_color=circle_color),
+                                           circle_color=circle_color,
+                                           index=index,
+                                           trace=trace),
                         interval=1)
     plt.tight_layout()
     plt.axis('scaled')
